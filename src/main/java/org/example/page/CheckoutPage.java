@@ -15,6 +15,8 @@ public class CheckoutPage extends BasePage{
     private WebElement zipCode;
     @FindBy(how = How.XPATH, using = "//android.view.ViewGroup[@content-desc='test-CONTINUE']")
     private WebElement continueButton;
+    @FindBy(how = How.XPATH, using = "//android.view.ViewGroup[@content-desc='test-Error message']/android.widget.TextView[1]")
+    private WebElement validationMessage;
 
     public CheckoutPage(AndroidDriver driver) {
         super(driver);
@@ -36,6 +38,10 @@ public class CheckoutPage extends BasePage{
         type(this.zipCode, zipCode);
 
         return this;
+    }
+
+    public String getValidationMessage() {
+        return validationMessage.getText();
     }
 
     public BasketSummaryPage clickContinueButton() {

@@ -18,18 +18,19 @@ public class AppiumExampleTest extends BaseTest {
         loginPage = new LoginPage(driver);
     }
 
+    @DisplayName("Add the product to the shopping cart. Confirm that the added product is displayed")
     @Test
     public void tc_001() {
         String itemName = "Sauce Labs Backpack";
 
-        Item item = Item.builder()
+        Item backpackItem = Item.builder()
                 .itemName(itemName).build();
 
         ProductListPage productListPage = loginPage.loginAsDefaultUser();
         double itemPrice = productListPage
                 .getItemPrice(itemName);
 
-        item.setPrice(itemPrice);
+        backpackItem.setPrice(itemPrice);
         BasketPage basketPage = productListPage
                 .clickOnItemByText(itemName)
                 .clickCartButton();
@@ -38,10 +39,13 @@ public class AppiumExampleTest extends BaseTest {
         double priceInBasket = Double.parseDouble(
                 removeDollarSignFromText(price.get(0)));
 
-        Assertions.assertEquals(item.getItemName(), itemNames.get(0), "Incorrect item name");
-        Assertions.assertEquals(item.getPrice(), priceInBasket, "Incorrect price value");
+        Assertions.assertEquals(backpackItem.getItemName(), itemNames.get(0), "Incorrect item name");
+        Assertions.assertEquals(backpackItem.getPrice(), priceInBasket, "Incorrect price value");
     }
 
+    @DisplayName("Ensure the Checkout screen displays the correct order details " +
+            "Open the shopping cart and continue. Fill in all required information fields " +
+            "Navigate to the payment screen. Enter payment information and proceed to order overview ")
     @Test
     public void tc_002() {
         String itemName = "Sauce Labs Backpack";
@@ -64,8 +68,9 @@ public class AppiumExampleTest extends BaseTest {
         Assertions.assertEquals(29.99, priceInBasket);
     }
 
+    @DisplayName("Place the Order and complete the purchase process")
     @Test
-    public void tc_0012() {
+    public void tc_003() {
         String itemName = "Sauce Labs Backpack";
 
         OrderConfirmationPage orderConfirmationPage = loginPage.loginAsDefaultUser()
@@ -86,8 +91,9 @@ public class AppiumExampleTest extends BaseTest {
                 .isTrue();
     }
 
+    @DisplayName("Filter products by price")
     @Test
-    public void tc_003() {
+    public void tc_004() {
         List<String> listOfAllPrices = loginPage.loginAsDefaultUser()
                 .clickFilterButton()
                 .clickPriceFromLowToHigh()
@@ -103,23 +109,26 @@ public class AppiumExampleTest extends BaseTest {
                 .isGreaterThan(1);
     }
 
-    @Test
-    public void tc_004() {
-        List<String> listOfAllNames = loginPage.loginAsDefaultUser()
-                .clickFilterButton()
-                .clickAlphabetically()
-                .getAllNames();
-
-        assertThat(listOfAllNames)
-                .as("Item names are not sorted alphabetically")
-                .isSorted();
-        assertThat(listOfAllNames.size())
-                .as("There is only one item on the page, cannot check sorting function")
-                .isGreaterThan(1);
-    }
-
+    @DisplayName("Validate error messages for empty required fields")
     @Test
     public void tc_005() {
+        String itemName = "Sauce Labs Backpack";
+
+        CheckoutPage checkoutPage = loginPage.loginAsDefaultUser()
+                .clickOnItemByText(itemName)
+                .clickCartButton()
+                .clickCheckoutButton();
+
+        checkoutPage.clickContinueButton();
+
+        assertThat(checkoutPage.getValidationMessage())
+                .as("Incorrect validation message for name")
+                .isEqualTo("First Name is required");
+    }
+
+    @DisplayName("Remove items from the cart and verify the update")
+    @Test
+    public void tc_006() {
         String itemName = "Sauce Labs Backpack";
 
         List<String> itemsInBasket = loginPage.loginAsDefaultUser()
@@ -131,5 +140,21 @@ public class AppiumExampleTest extends BaseTest {
         assertThat(itemsInBasket.size())
                 .as("Looks like items are still in the basket")
                 .isEqualTo(0);
+    }
+
+    @DisplayName("Filter products by name")
+    @Test
+    public void tc_007() {
+        List<String> listOfAllNames = loginPage.loginAsDefaultUser()
+                .clickFilterButton()
+                .clickAlphabetically()
+                .getAllNames();
+
+        assertThat(listOfAllNames)
+                .as("Item names are not sorted alphabetically")
+                .isSorted();
+        assertThat(listOfAllNames.size())
+                .as("There is only one item on the page, cannot check sorting function")
+                .isGreaterThan(1);
     }
 }
