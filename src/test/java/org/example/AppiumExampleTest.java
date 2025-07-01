@@ -1,30 +1,21 @@
 package org.example;
 
-import io.appium.java_client.android.AndroidDriver;
-import org.example.driver.AppiumConfig;
 import org.example.model.Item;
 import org.example.page.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
-public class AppiumExampleTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.example.helper.StringHelper.removeDollarSignFromText;
 
-    private static AndroidDriver driver;
-    private LoginPage loginPage = new LoginPage(driver);
+public class AppiumExampleTest extends BaseTest {
 
-    @BeforeAll
-    public static void setUp() throws Exception {
-        driver = AppiumConfig.getDriver();
-    }
+    private LoginPage loginPage;
 
-    @AfterAll
-    public static void tearDown() {
-        driver.terminateApp("com.swaglabsmobileapp");
-        AppiumConfig.quitDriver();
+    @BeforeEach
+    public void initPages() {
+        loginPage = new LoginPage(driver);
     }
 
     @Test
@@ -34,17 +25,18 @@ public class AppiumExampleTest {
         Item item = Item.builder()
                 .itemName(itemName).build();
 
-        ProductPage productPage = loginPage.loginAsDefaultUser();
-        double itemPrice = productPage
+        ProductListPage productListPage = loginPage.loginAsDefaultUser();
+        double itemPrice = productListPage
                 .getItemPrice(itemName);
 
         item.setPrice(itemPrice);
-        BasketPage basketPage = productPage
+        BasketPage basketPage = productListPage
                 .clickOnItemByText(itemName)
                 .clickCartButton();
         List<String> itemNames = basketPage.getItemsInBasket();
         List<String> price = basketPage.getItemsPriceInBasket();
-        double priceInBasket = Double.parseDouble(price.get(0).replace("$", ""));
+        double priceInBasket = Double.parseDouble(
+                removeDollarSignFromText(price.get(0)));
 
         Assertions.assertEquals(item.getItemName(), itemNames.get(0), "Incorrect item name");
         Assertions.assertEquals(item.getPrice(), priceInBasket, "Incorrect price value");
@@ -65,10 +57,79 @@ public class AppiumExampleTest {
 
         List<String> itemNamesFromBasket = basketSummaryPage.getItemsInBasket();
         List<String> price = basketSummaryPage.getItemsPriceInBasket();
-        double priceInBasket = Double.parseDouble(price.get(0).replace("$", ""));
+        double priceInBasket = Double.parseDouble(
+                removeDollarSignFromText(price.get(0)));
 
         Assertions.assertEquals(itemName, itemNamesFromBasket.get(0));
         Assertions.assertEquals(29.99, priceInBasket);
     }
 
+    @Test
+    public void tc_0012() {
+        String itemName = "Sauce Labs Backpack";
+
+        OrderConfirmationPage orderConfirmationPage = loginPage.loginAsDefaultUser()
+                .clickOnItemByText(itemName)
+                .clickCartButton()
+                .clickCheckoutButton()
+                .typeFirstName("Adam")
+                .typeLastName("Nowak")
+                .typeZipCode("37-210")
+                .clickContinueButton()
+                .clickFinishButton();
+
+        assertThat(orderConfirmationPage.isTitleDisplayed())
+                .as("Title is not visible")
+                .isTrue();
+        assertThat(orderConfirmationPage.isSuccessfulInformationDisplayed())
+                .as("Successful order information is not visible")
+                .isTrue();
+    }
+
+    @Test
+    public void tc_003() {
+        List<String> listOfAllPrices = loginPage.loginAsDefaultUser()
+                .clickFilterButton()
+                .clickPriceFromLowToHigh()
+                .getAllPrices();
+
+        listOfAllPrices.replaceAll(s -> removeDollarSignFromText(s));
+
+        assertThat(listOfAllPrices)
+                .as("Prices are not sorted from lowest to highest")
+                .isSorted();
+        assertThat(listOfAllPrices.size())
+                .as("There is only one item on the page, cannot check sorting function")
+                .isGreaterThan(1);
+    }
+
+    @Test
+    public void tc_004() {
+        List<String> listOfAllNames = loginPage.loginAsDefaultUser()
+                .clickFilterButton()
+                .clickAlphabetically()
+                .getAllNames();
+
+        assertThat(listOfAllNames)
+                .as("Item names are not sorted alphabetically")
+                .isSorted();
+        assertThat(listOfAllNames.size())
+                .as("There is only one item on the page, cannot check sorting function")
+                .isGreaterThan(1);
+    }
+
+    @Test
+    public void tc_005() {
+        String itemName = "Sauce Labs Backpack";
+
+        List<String> itemsInBasket = loginPage.loginAsDefaultUser()
+                .clickOnItemByText(itemName)
+                .clickCartButton()
+                .clickRemoveItemFromBasketButton()
+                .getItemsInBasket();
+
+        assertThat(itemsInBasket.size())
+                .as("Looks like items are still in the basket")
+                .isEqualTo(0);
+    }
 }

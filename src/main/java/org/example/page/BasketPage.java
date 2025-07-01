@@ -15,6 +15,8 @@ public class BasketPage extends BasePage {
     private List<WebElement> price;
     @FindBy(how = How.XPATH, using = "//android.view.ViewGroup[@content-desc='test-CHECKOUT']")
     private WebElement checkoutButton;
+    @FindBy(how = How.XPATH, using = "//android.view.ViewGroup[@content-desc='test-REMOVE']")
+    private WebElement removeItemFromBasket;
 
     public BasketPage(AndroidDriver driver) {
         super(driver);
@@ -36,5 +38,11 @@ public class BasketPage extends BasePage {
         checkoutButton.click();
 
         return new CheckoutPage(driver);
+    }
+
+    public BasketPage clickRemoveItemFromBasketButton() {
+        removeItemFromBasket.click();
+
+        return this;
     }
 }

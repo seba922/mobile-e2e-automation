@@ -1,7 +1,6 @@
 package org.example.page;
 
 import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -17,10 +16,10 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
-    public ProductPage loginAsDefaultUser() {
+    public ProductListPage loginAsDefaultUser() {
         click(standardUserButton);
         click(loginButton);
 
-        return new ProductPage(driver);
+        return new ProductListPage(driver);
     }
 }

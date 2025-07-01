@@ -33,7 +33,9 @@ public class BasketSummaryPage extends BasePage {
                 .collect(Collectors.toList());
     }
 
-    public void clickFinishButton() {
+    public OrderConfirmationPage clickFinishButton() {
         swipeAndClick(finishButton);
+
+        return new OrderConfirmationPage(driver);
     }
 }

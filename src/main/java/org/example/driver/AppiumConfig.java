@@ -2,6 +2,7 @@ package org.example.driver;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
+import org.example.config.ConfigReader;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -13,10 +14,10 @@ public class AppiumConfig {
 
     public static AndroidDriver getDriver() throws MalformedURLException {
         if (driver == null) {
-            File file = new File("src/main/resources/Android.SauceLabs.Mobile.Sample.app.2.7.1.apk");
+            File file = new File(String.format("src/main/resources/%s", ConfigReader.appName));
 
             UiAutomator2Options options = new UiAutomator2Options();
-            options.setDeviceName("emulator-5554");
+            options.setDeviceName(ConfigReader.deviceName);
             options.setPlatformName("Android");
             options.setApp(file.getAbsolutePath());
             options.setNoReset(true);
