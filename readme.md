@@ -5,7 +5,7 @@ This project is an end-to-end automation framework for mobile applications, buil
 ## Features
 
 - Clean test structure using the Page Object Model (POM)
-- Easy configuration for Android you can provide APP_NAME and DEVICE_NAME
+- Easy configuration for Android
 - Helper methods and action wrappers for reusable code
 
 ---
@@ -18,7 +18,7 @@ All items from the list below have been completed:
 
 - [x] Implemented the Page Object Model (POM) to structure and organize test code
 - [x] Created configuration files for Android or iOS to manage platform-specific settings
-- [x] Used environment variables to dynamically manage key parameters such as platform version, application path, and more
+- [x] Used environment variables to dynamically manage key parameters such as platform version, application path, and more - you can provide APP_NAME and DEVICE_NAME
 
 ### Advanced (optional, but recommended)
 
