@@ -1,29 +1,35 @@
 package org.example.config;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class ConfigReader {
 
-    private static final Properties properties;
-    public static String appName;
-    public static String deviceName;
+    private static final String CONFIG_FILE = "config.properties";
+    private static final Properties properties = new Properties();
 
     static {
-        properties = new Properties();
-        try (FileInputStream fis = new FileInputStream("config.properties")) {
-            properties.load(fis);
-            setProperties();
+        try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
+            if (input == null) {
+                throw new RuntimeException("Cannot find config file " + CONFIG_FILE);
+            }
+            properties.load(input);
         } catch (IOException e) {
-            throw new RuntimeException("Cannot read config file", e);
+            throw new RuntimeException("Cannot load configuration file " + CONFIG_FILE, e);
         }
     }
 
-    private static void setProperties() {
-        appName = System.getenv("APP_NAME") != null ?
-                System.getenv("APP_NAME") : properties.getProperty("app.name");
-        deviceName = System.getenv("DEVICE_NAME") != null ?
-                System.getenv("DEVICE_NAME") : properties.getProperty("device.name");
+    private static String getOrEnv(String propertyKey, String envKey) {
+        String envValue = System.getenv(envKey);
+        return envValue != null ? envValue : properties.getProperty(propertyKey);
+    }
+
+    public static String getAppName() {
+        return getOrEnv("app.name", "APP_NAME");
+    }
+
+    public static String getDeviceName() {
+        return getOrEnv("device.name", "DEVICE_NAME");
     }
 }

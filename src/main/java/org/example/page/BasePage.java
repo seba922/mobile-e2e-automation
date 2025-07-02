@@ -37,7 +37,7 @@ public class BasePage {
         webElement.click();
     }
 
-    public void swipeDown(AndroidDriver driver) {
+    private void swipeDown(AndroidDriver driver) {
         int width = driver.manage().window().getSize().width;
         int height = driver.manage().window().getSize().height;
 
