@@ -42,6 +42,20 @@ All items from the list below have been completed:
 
 ---
 
+### What's more
+#### Additional Branch: Appium + Selenide Integration
+A new branch named feature/appium-selenide has been added.
+In this branch, you will find an alternative solution based on Appium and Selenide.
+
+Key Benefits
+- [x] Selenide automatically waits for elements to appear before performing any interaction. This makes test code more stable and eliminates the need for explicit waits.
+
+- [x] There is no need to initialize page objects using PageFactory—Selenide handles element initialization and interactions in a much simpler way.
+
+- [x] The code is cleaner, more concise, and easier to maintain.
+
+You can check out the feature/appium-selenide branch to see how Appium and Selenide work together for even more efficient mobile test automation.
+
 ## How to Run
 
 
