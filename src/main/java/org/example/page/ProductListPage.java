@@ -19,6 +19,8 @@ public class ProductListPage extends BasePage {
     private WebElement sortByPriceLowToHigh;
     @FindBy(how = How.XPATH, using = "//android.widget.TextView[@text='Name (A to Z)']")
     private WebElement sortByAlphabetically;
+    @FindBy(how = How.XPATH, using = "//android.widget.TextView[@text='Name (Z to A)']")
+    private WebElement sortByReversOrder;
     @FindBy(how = How.XPATH, using = "//android.widget.TextView[@content-desc='test-Item title']")
     private List<WebElement> productList;
     @FindBy(how = How.XPATH, using = "//android.widget.TextView[@text='ADD TO CART']")
@@ -63,6 +65,12 @@ public class ProductListPage extends BasePage {
 
     public ProductListPage clickAlphabetically() {
         sortByAlphabetically.click();
+
+        return this;
+    }
+
+    public ProductListPage clickReverseOrder() {
+        sortByReversOrder.click();
 
         return this;
     }

@@ -14,10 +14,10 @@ public class AppiumConfig {
 
     public static AndroidDriver getDriver() throws MalformedURLException {
         if (driver == null) {
-            File file = new File(String.format("src/main/resources/%s", ConfigReader.appName));
+            File file = new File(String.format("src/main/resources/%s", ConfigReader.getAppName()));
 
             UiAutomator2Options options = new UiAutomator2Options();
-            options.setDeviceName(ConfigReader.deviceName);
+            options.setDeviceName(ConfigReader.getDeviceName());
             options.setPlatformName("Android");
             options.setApp(file.getAbsolutePath());
             options.setNoReset(true);

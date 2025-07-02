@@ -4,6 +4,7 @@ import org.example.model.Item;
 import org.example.page.*;
 import org.junit.jupiter.api.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,9 +92,26 @@ public class AppiumExampleTest extends BaseTest {
                 .isTrue();
     }
 
-    @DisplayName("Filter products by price")
+    @DisplayName("Validate error messages for empty required fields")
     @Test
     public void tc_004() {
+        String itemName = "Sauce Labs Backpack";
+
+        CheckoutPage checkoutPage = loginPage.loginAsDefaultUser()
+                .clickOnItemByText(itemName)
+                .clickCartButton()
+                .clickCheckoutButton();
+
+        checkoutPage.clickContinueButton();
+
+        assertThat(checkoutPage.getValidationMessage())
+                .as("Incorrect validation message for name")
+                .isEqualTo("First Name is required");
+    }
+
+    @DisplayName("Filter products by price")
+    @Test
+    public void tc_005() {
         List<String> listOfAllPrices = loginPage.loginAsDefaultUser()
                 .clickFilterButton()
                 .clickPriceFromLowToHigh()
@@ -109,42 +127,9 @@ public class AppiumExampleTest extends BaseTest {
                 .isGreaterThan(1);
     }
 
-    @DisplayName("Validate error messages for empty required fields")
-    @Test
-    public void tc_005() {
-        String itemName = "Sauce Labs Backpack";
-
-        CheckoutPage checkoutPage = loginPage.loginAsDefaultUser()
-                .clickOnItemByText(itemName)
-                .clickCartButton()
-                .clickCheckoutButton();
-
-        checkoutPage.clickContinueButton();
-
-        assertThat(checkoutPage.getValidationMessage())
-                .as("Incorrect validation message for name")
-                .isEqualTo("First Name is required");
-    }
-
-    @DisplayName("Remove items from the cart and verify the update")
-    @Test
-    public void tc_006() {
-        String itemName = "Sauce Labs Backpack";
-
-        List<String> itemsInBasket = loginPage.loginAsDefaultUser()
-                .clickOnItemByText(itemName)
-                .clickCartButton()
-                .clickRemoveItemFromBasketButton()
-                .getItemsInBasket();
-
-        assertThat(itemsInBasket.size())
-                .as("Looks like items are still in the basket")
-                .isEqualTo(0);
-    }
-
     @DisplayName("Filter products by name")
     @Test
-    public void tc_007() {
+    public void tc_006() {
         List<String> listOfAllNames = loginPage.loginAsDefaultUser()
                 .clickFilterButton()
                 .clickAlphabetically()
@@ -156,5 +141,37 @@ public class AppiumExampleTest extends BaseTest {
         assertThat(listOfAllNames.size())
                 .as("There is only one item on the page, cannot check sorting function")
                 .isGreaterThan(1);
+    }
+
+    @DisplayName("Filter products by name in reverse order")
+    @Test
+    public void tc_007() {
+        List<String> listOfAllNames = loginPage.loginAsDefaultUser()
+                .clickFilterButton()
+                .clickReverseOrder()
+                .getAllNames();
+
+        assertThat(listOfAllNames)
+                .as("Item names are not sorted alphabetically")
+                .isSortedAccordingTo(Comparator.reverseOrder());
+        assertThat(listOfAllNames.size())
+                .as("There is only one item on the page, cannot check sorting function")
+                .isGreaterThan(1);
+    }
+
+    @DisplayName("Remove items from the cart and verify the update")
+    @Test
+    public void tc_008() {
+        String itemName = "Sauce Labs Backpack";
+
+        List<String> itemsInBasket = loginPage.loginAsDefaultUser()
+                .clickOnItemByText(itemName)
+                .clickCartButton()
+                .clickRemoveItemFromBasketButton()
+                .getItemsInBasket();
+
+        assertThat(itemsInBasket.size())
+                .as("Looks like items are still in the basket")
+                .isEqualTo(0);
     }
 }
