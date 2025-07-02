@@ -1,25 +1,18 @@
 package org.example.page;
 
-import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.How;
+import com.codeborne.selenide.SelenideElement;
+
+import static com.codeborne.selenide.Selenide.$x;
 
 public class LoginPage extends BasePage {
 
-    @FindBy(how = How.XPATH, using = "//android.widget.TextView[@text='standard_user']")
-    private WebElement standardUserButton;
-    @FindBy(how = How.XPATH, using = "//android.widget.TextView[@text='LOGIN']")
-    private WebElement loginButton;
-
-    public LoginPage(AndroidDriver driver) {
-        super(driver);
-    }
+    private final SelenideElement standardUserButton = $x("//android.widget.TextView[@text='standard_user']");
+    private final SelenideElement loginButton = $x("//android.widget.TextView[@text='LOGIN']");
 
     public ProductListPage loginAsDefaultUser() {
         click(standardUserButton);
         click(loginButton);
 
-        return new ProductListPage(driver);
+        return new ProductListPage();
     }
 }

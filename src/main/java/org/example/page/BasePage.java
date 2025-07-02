@@ -1,33 +1,28 @@
 package org.example.page;
 
-import io.appium.java_client.TouchAction;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.pagefactory.AppiumFieldDecorator;
-import io.appium.java_client.touch.WaitOptions;
-import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
-import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.List;
+
+import static com.codeborne.selenide.Condition.visible;
 
 public class BasePage {
 
     protected AndroidDriver driver;
     protected WebDriverWait wait;
 
-    public BasePage(AndroidDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-
-        PageFactory.initElements(new AppiumFieldDecorator(driver), this);
+    protected void click(SelenideElement selenideElement) {
+        selenideElement.shouldBe(visible).click();
     }
 
     protected WebElement waitForElement(By locator) {
@@ -39,7 +34,7 @@ public class BasePage {
     }
 
     protected void click(WebElement webElement) {
-        waitForElementVisible(webElement).click();
+        webElement.click();
     }
 
     public void swipeDown(AndroidDriver driver) {
@@ -75,22 +70,17 @@ public class BasePage {
         throw new RuntimeException("Cannot click on element");
     }
 
-    protected void click(By locator) {
-        waitForElement(locator).click();
-    }
-
     protected void type(WebElement webElement, String text) {
         webElement.clear();
         webElement.sendKeys(text);
     }
 
-    protected int getElementIndex(List<WebElement> webElementList, String text) {
-        for (int i = 0; i < webElementList.size(); i++) {
-            if (webElementList.get(i).getText().equals(text)) {
+    protected int getElementIndex(ElementsCollection elements, String text) {
+        for (int i = 0; i < elements.size(); i++) {
+            if (elements.get(i).getText().equals(text)) {
                 return i;
             }
         }
-
-        throw new RuntimeException("Cannot find element on list");
+        throw new IllegalArgumentException("Nie znaleziono elementu o tekście: " + text);
     }
 }

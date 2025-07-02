@@ -1,5 +1,6 @@
 package org.example.driver;
 
+import com.codeborne.selenide.*;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import org.example.config.ConfigReader;
@@ -14,7 +15,7 @@ public class AppiumConfig {
 
     public static AndroidDriver getDriver() throws MalformedURLException {
         if (driver == null) {
-            File file = new File(String.format("src/main/resources/%s", ConfigReader.appName));
+            File file = new File("src/main/resources", ConfigReader.appName);
 
             UiAutomator2Options options = new UiAutomator2Options();
             options.setDeviceName(ConfigReader.deviceName);
@@ -26,6 +27,9 @@ public class AppiumConfig {
 
             driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), options);
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+            WebDriverRunner.setWebDriver(driver);
+            Configuration.timeout = 10000;
         }
         return driver;
     }
@@ -34,6 +38,7 @@ public class AppiumConfig {
         if (driver != null) {
             driver.quit();
             driver = null;
+            WebDriverRunner.closeWebDriver();
         }
     }
 }
